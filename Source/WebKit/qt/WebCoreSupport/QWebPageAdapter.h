@@ -36,6 +36,7 @@
 
 QT_BEGIN_NAMESPACE
 class QBitArray;
+class QContextMenuEvent;
 class QKeyEvent;
 class QMimeData;
 class QMouseEvent;

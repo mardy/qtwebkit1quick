@@ -13,6 +13,11 @@ SUBDIRS += api
 build?(webkit1) {
     webkitwidgets.file = widgetsapi.pri
     SUBDIRS += webkitwidgets
+
+    have?(QTQUICK) {
+        webkit1quick.file = quickapi.pri
+        SUBDIRS += webkit1quick
+    }
 }
 
 build?(webkit2) {
