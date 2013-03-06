@@ -1,12 +1,10 @@
 %modules = ( # path to module name map
     "QtWebKit" => "$basedir",
     "QtWebKitWidgets" => "$basedir",
-    "QtWebKit1Quick" => "$basedir"
 );
 %moduleheaders = ( # restrict the module headers to those found in relative path
     "QtWebKit" => "WebKit/qt/Api;WebKit2/UIProcess/API/qt",
     "QtWebKitWidgets" => "WebKit/qt/WidgetApi",
-    "QtWebKit1Quick" => "WebKit/qt/QuickApi",
 );
 %classnames = (
 );
