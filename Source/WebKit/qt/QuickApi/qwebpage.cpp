@@ -24,8 +24,6 @@
 
 #include "DefaultFullScreenVideoHandler.h"
 #include "InitWebCoreQt.h"
-#include "InspectorClientQt.h"
-#include "InspectorServerQt.h"
 #include "QGraphicsWidgetPluginImpl.h"
 #include "QWidgetPluginImpl.h"
 #include "QtPlatformPlugin.h"
@@ -965,12 +963,12 @@ QWebPage::ViewportAttributes& QWebPage::ViewportAttributes::operator=(const QWeb
 
     QWebPage holds a main frame responsible for web content, settings, the history
     of navigated links and actions. This class can be used, together with QWebFrame,
-    to provide functionality like QWebView in a widget-less environment.
+    to provide functionality like QQuickWebView in a widget-less environment.
 
-    QWebPage's API is very similar to QWebView, as you are still provided with
+    QWebPage's API is very similar to QQuickWebView, as you are still provided with
     common functions like action() (known as
-    \l{QWebView::pageAction()}{pageAction}() in QWebView), triggerAction(),
-    findText() and settings(). More QWebView-like functions can be found in the
+    \l{QQuickWebView::pageAction()}{pageAction}() in QQuickWebView), triggerAction(),
+    findText() and settings(). More QQuickWebView-like functions can be found in the
     main frame of QWebPage, obtained via the mainFrame() function. For example,
     the \l{QWebFrame::load()}{load}(), \l{QWebFrame::setUrl()}{setUrl}() and
     \l{QWebFrame::setHtml()}{setHtml}() functions for QWebPage can be accessed
@@ -1218,8 +1216,8 @@ void QWebPage::setFeaturePermission(QWebFrame* frame, Feature feature, Permissio
 
     If the new window can be created, the new window's QWebPage is returned; otherwise a null pointer is returned.
 
-    If the view associated with the web page is a QWebView object, then the default implementation forwards
-    the request to QWebView's createWindow() function; otherwise it returns a null pointer.
+    If the view associated with the web page is a QQuickWebView object, then the default implementation forwards
+    the request to QQuickWebView's createWindow() function; otherwise it returns a null pointer.
 
     If \a type is WebModalDialog, the application must call setWindowModality(Qt::ApplicationModal) on the new window.
 
@@ -1227,13 +1225,13 @@ void QWebPage::setFeaturePermission(QWebFrame* frame, Feature feature, Permissio
     reimplementing this method application must also set the JavaScriptCanOpenWindows attribute
     of QWebSettings to true in order for it to get called.
 
-    \sa acceptNavigationRequest(), QWebView::createWindow()
+    \sa acceptNavigationRequest(), QQuickWebView::createWindow()
 */
 QWebPage *QWebPage::createWindow(WebWindowType type)
 {
-    QWebView *webView = qobject_cast<QWebView*>(view());
+    QQuickWebView *webView = qobject_cast<QQuickWebView*>(view());
     if (webView) {
-        QWebView *newView = webView->createWindow(type);
+        QQuickWebView *newView = webView->createWindow(type);
         if (newView)
             return newView->page();
     }
@@ -2252,7 +2250,7 @@ quint64 QWebPage::bytesReceived() const
     \fn void QWebPage::repaintRequested(const QRect& dirtyRect)
 
     This signal is emitted whenever this QWebPage should be updated. It's useful
-    when rendering a QWebPage without a QWebView or QGraphicsWebView.
+    when rendering a QWebPage without a QQuickWebView or QGraphicsWebView.
     \a dirtyRect contains the area that needs to be updated. To paint the QWebPage get
     the mainFrame() and call the render(QPainter*, const QRegion&) method with the
     \a dirtyRect as the second parameter.

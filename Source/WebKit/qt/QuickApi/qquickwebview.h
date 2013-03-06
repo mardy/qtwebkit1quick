@@ -36,10 +36,10 @@ class QQuickPaintedItem;
 QT_END_NAMESPACE
 
 class QWebPage;
-class QWebViewPrivate;
+class QQuickWebViewPrivate;
 class QWebNetworkRequest;
 
-class QWEBKITWIDGETS_EXPORT QWebView : public QQuickPaintedItem {
+class QWEBKITWIDGETS_EXPORT QQuickWebView : public QQuickPaintedItem {
     Q_OBJECT
     Q_PROPERTY(QString title READ title)
     Q_PROPERTY(QUrl url READ url WRITE setUrl)
@@ -55,8 +55,8 @@ class QWEBKITWIDGETS_EXPORT QWebView : public QQuickPaintedItem {
     Q_PROPERTY(QPainter::RenderHints renderHints READ renderHints WRITE setRenderHints)
     Q_FLAGS(QPainter::RenderHints)
 public:
-    explicit QWebView(QQuickItem *parent = 0);
-    virtual ~QWebView();
+    explicit QQuickWebView(QQuickItem *parent = 0);
+    virtual ~QQuickWebView();
 
     QWebPage* page() const;
     void setPage(QWebPage* page);
@@ -127,7 +127,7 @@ protected:
     void resizeEvent(QResizeEvent*);
     virtual void paint(QPainter*);
 
-    virtual QWebView *createWindow(QWebPage::WebWindowType type);
+    virtual QQuickWebView *createWindow(QWebPage::WebWindowType type);
 
     virtual void mouseMoveEvent(QMouseEvent*);
     virtual void mousePressEvent(QMouseEvent*);
@@ -148,7 +148,7 @@ protected:
 
 private:
     friend class QWebPage;
-    QWebViewPrivate* d;
+    QQuickWebViewPrivate* d;
     Q_PRIVATE_SLOT(d, void _q_pageDestroyed())
 };
 

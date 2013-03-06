@@ -83,7 +83,6 @@ SOURCES += \
     $$PWD/WebKit/qt/QuickApi/qwebpage.cpp \
     $$PWD/WebKit/qt/WidgetSupport/QWebUndoCommand.cpp \
     $$PWD/WebKit/qt/WidgetSupport/DefaultFullScreenVideoHandler.cpp \
-    $$PWD/WebKit/qt/WidgetSupport/InspectorClientWebPage.cpp \
     $$PWD/WebKit/qt/WidgetSupport/QGraphicsWidgetPluginImpl.cpp \
     $$PWD/WebKit/qt/WidgetSupport/QWidgetPluginImpl.cpp
 
@@ -94,7 +93,6 @@ HEADERS += \
     $$PWD/WebKit/qt/QuickApi/qwebpage.h \
     $$PWD/WebKit/qt/QuickApi/qwebpage_p.h \
     $$PWD/WebKit/qt/Api/qwebkitplatformplugin.h \
-    $$PWD/WebKit/qt/WidgetSupport/InspectorClientWebPage.h \
     $$PWD/WebKit/qt/WidgetSupport/DefaultFullScreenVideoHandler.h \
     $$PWD/WebKit/qt/WidgetSupport/QWebUndoCommand.h \
     $$PWD/WebKit/qt/WidgetSupport/QGraphicsWidgetPluginImpl.h \

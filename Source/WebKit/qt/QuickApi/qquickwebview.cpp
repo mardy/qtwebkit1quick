@@ -34,9 +34,9 @@
 #include <qfile.h>
 #include <qpainter.h>
 
-class QWebViewPrivate {
+class QQuickWebViewPrivate {
 public:
-    QWebViewPrivate(QWebView *view)
+    QQuickWebViewPrivate(QQuickWebView *view)
         : view(view)
         , page(0)
         , renderHints(QPainter::TextAntialiasing | QPainter::SmoothPixmapTransform)
@@ -44,50 +44,50 @@ public:
         Q_ASSERT(view);
     }
 
-    virtual ~QWebViewPrivate();
+    virtual ~QQuickWebViewPrivate();
 
     void _q_pageDestroyed();
     void detachCurrentPage();
 
-    QWebView *view;
+    QQuickWebView *view;
     QWebPage *page;
 
     QPainter::RenderHints renderHints;
 };
 
-QWebViewPrivate::~QWebViewPrivate()
+QQuickWebViewPrivate::~QQuickWebViewPrivate()
 {
     detachCurrentPage();
 }
 
-void QWebViewPrivate::_q_pageDestroyed()
+void QQuickWebViewPrivate::_q_pageDestroyed()
 {
     page = 0;
     view->setPage(0);
 }
 
 /*!
-    \class QWebView
+    \class QQuickWebView
     \since 4.4
-    \brief The QWebView class provides a widget that is used to view and edit
+    \brief The QQuickWebView class provides a widget that is used to view and edit
     web documents.
     \ingroup advanced
 
     \inmodule QtWebKit
 
-    QWebView is the main widget component of the QtWebKit web browsing module.
+    QQuickWebView is the main widget component of the QtWebKit web browsing module.
     It can be used in various applications to display web content live from the
     Internet.
 
-    The image below shows QWebView previewed in \QD with a Nokia website.
+    The image below shows QQuickWebView previewed in \QD with a Nokia website.
 
     \image qwebview-url.png
 
-    A web site can be loaded onto QWebView with the load() function. Like all
+    A web site can be loaded onto QQuickWebView with the load() function. Like all
     Qt widgets, the show() function must be invoked in order to display
-    QWebView. The snippet below illustrates this:
+    QQuickWebView. The snippet below illustrates this:
 
-    \snippet webkitsnippets/simple/main.cpp Using QWebView
+    \snippet webkitsnippets/simple/main.cpp Using QQuickWebView
 
     Alternatively, setUrl() can also be used to load a web site. If you have
     the HTML content readily available, you can use setHtml() instead.
@@ -100,7 +100,7 @@ void QWebViewPrivate::_q_pageDestroyed()
     load success or failure.
 
     The page() function returns a pointer to the web page object. See
-    \l{Elements of QWebView} for an explanation of how the web page
+    \l{Elements of QQuickWebView} for an explanation of how the web page
     is related to the view. To modify your web view's settings, you can access
     the QWebSettings object with the settings() function. With QWebSettings,
     you can change the default fonts, enable or disable features such as
@@ -120,27 +120,27 @@ void QWebViewPrivate::_q_pageDestroyed()
     encapsulated within the QAction objects returned by pageAction(). These
     actions can be programmatically triggered using triggerPageAction().
     Alternatively, the actions can be added to a toolbar or a menu directly.
-    QWebView maintains the state of the returned actions but allows
+    QQuickWebView maintains the state of the returned actions but allows
     modification of action properties such as \l{QAction::}{text} or
     \l{QAction::}{icon}.
 
-    A QWebView can be printed onto a QPrinter using the print() function.
+    A QQuickWebView can be printed onto a QPrinter using the print() function.
     This function is marked as a slot and can be conveniently connected to
     \l{QPrintPreviewDialog}'s \l{QPrintPreviewDialog::}{paintRequested()}
     signal.
 
     If you want to provide support for web sites that allow the user to open
-    new windows, such as pop-up windows, you can subclass QWebView and
+    new windows, such as pop-up windows, you can subclass QQuickWebView and
     reimplement the createWindow() function.
 
-    \section1 Elements of QWebView
+    \section1 Elements of QQuickWebView
 
-    QWebView consists of other objects such as QWebFrame and QWebPage. The
+    QQuickWebView consists of other objects such as QWebFrame and QWebPage. The
     flowchart below shows these elements are related.
 
     \image qwebview-diagram.png
 
-    \note It is possible to use QWebPage and QWebFrame, without using QWebView,
+    \note It is possible to use QWebPage and QWebFrame, without using QQuickWebView,
     if you do not require QWidget attributes. Nevertheless, QtWebKit depends
     on QtGui, so you should use a QApplication instead of QCoreApplication.
 
@@ -155,8 +155,8 @@ static QAccessibleInterface* accessibleInterfaceFactory(const QString& key, QObj
 
     if (QWebPage* page = qobject_cast<QWebPage*>(object))
         return new QWebPageAccessible(page);
-    if (QWebView* view = qobject_cast<QWebView*>(object))
-        return new QWebViewAccessible(view);
+    if (QQuickWebView* view = qobject_cast<QQuickWebView*>(object))
+        return new QQuickWebViewAccessible(view);
     if (QWebFrame* frame = qobject_cast<QWebFrame*>(object))
         return new QWebFrameAccessible(frame);
     return 0;
@@ -164,14 +164,14 @@ static QAccessibleInterface* accessibleInterfaceFactory(const QString& key, QObj
 #endif
 
 /*!
-    Constructs an empty QWebView with parent \a parent.
+    Constructs an empty QQuickWebView with parent \a parent.
 
     \sa load()
 */
-QWebView::QWebView(QQuickItem *parent)
+QQuickWebView::QQuickWebView(QQuickItem *parent)
     : QQuickPaintedItem(parent)
 {
-    d = new QWebViewPrivate(this);
+    d = new QQuickWebViewPrivate(this);
 
     setFlags(QQuickItem::ItemAcceptsInputMethod |
              QQuickItem::ItemHasContents |
@@ -181,7 +181,7 @@ QWebView::QWebView(QQuickItem *parent)
 /*!
     Destroys the web view.
 */
-QWebView::~QWebView()
+QQuickWebView::~QQuickWebView()
 {
     delete d;
 }
@@ -191,16 +191,16 @@ QWebView::~QWebView()
 
     \sa setPage()
 */
-QWebPage *QWebView::page() const
+QWebPage *QQuickWebView::page() const
 {
     if (!d->page) {
-        QWebView *that = const_cast<QWebView *>(this);
+        QQuickWebView *that = const_cast<QQuickWebView *>(this);
         that->setPage(new QWebPage(that));
     }
     return d->page;
 }
 
-void QWebViewPrivate::detachCurrentPage()
+void QQuickWebViewPrivate::detachCurrentPage()
 {
     if (!page)
         return;
@@ -236,7 +236,7 @@ void QWebViewPrivate::detachCurrentPage()
 
     \sa page()
 */
-void QWebView::setPage(QWebPage* page)
+void QQuickWebView::setPage(QWebPage* page)
 {
     if (d->page == page)
         return;
@@ -283,13 +283,13 @@ void QWebView::setPage(QWebPage* page)
 
     \sa setUrl(), url(), urlChanged(), QUrl::fromUserInput()
 */
-void QWebView::load(const QUrl &url)
+void QQuickWebView::load(const QUrl &url)
 {
     page()->mainFrame()->load(url);
 }
 
 /*!
-    \fn void QWebView::load(const QNetworkRequest &request, QNetworkAccessManager::Operation operation, const QByteArray &body)
+    \fn void QQuickWebView::load(const QNetworkRequest &request, QNetworkAccessManager::Operation operation, const QByteArray &body)
 
     Loads a network request, \a request, using the method specified in \a operation.
 
@@ -300,7 +300,7 @@ void QWebView::load(const QUrl &url)
     \sa url(), urlChanged()
 */
 
-void QWebView::load(const QNetworkRequest &request, QNetworkAccessManager::Operation operation, const QByteArray &body)
+void QQuickWebView::load(const QNetworkRequest &request, QNetworkAccessManager::Operation operation, const QByteArray &body)
 {
     page()->mainFrame()->load(request, operation, body);
 }
@@ -326,7 +326,7 @@ void QWebView::load(const QNetworkRequest &request, QNetworkAccessManager::Opera
 
     \sa load(), setContent(), QWebFrame::toHtml(), QWebFrame::setContent()
 */
-void QWebView::setHtml(const QString &html, const QUrl &baseUrl)
+void QQuickWebView::setHtml(const QString &html, const QUrl &baseUrl)
 {
     page()->mainFrame()->setHtml(html, baseUrl);
 }
@@ -342,7 +342,7 @@ void QWebView::setHtml(const QString &html, const QUrl &baseUrl)
 
     \sa load(), setHtml(), QWebFrame::toHtml()
 */
-void QWebView::setContent(const QByteArray &data, const QString &mimeType, const QUrl &baseUrl)
+void QQuickWebView::setContent(const QByteArray &data, const QString &mimeType, const QUrl &baseUrl)
 {
     page()->mainFrame()->setContent(data, mimeType, baseUrl);
 }
@@ -354,7 +354,7 @@ void QWebView::setContent(const QByteArray &data, const QString &mimeType, const
 
     \snippet webkitsnippets/qtwebkit_qwebview_snippet.cpp 0
 */
-QWebHistory *QWebView::history() const
+QWebHistory *QQuickWebView::history() const
 {
     return page()->history();
 }
@@ -368,20 +368,20 @@ QWebHistory *QWebView::history() const
 
     \sa QWebSettings::globalSettings()
 */
-QWebSettings *QWebView::settings() const
+QWebSettings *QQuickWebView::settings() const
 {
     return page()->settings();
 }
 
 /*!
-    \property QWebView::title
+    \property QQuickWebView::title
     \brief the title of the web page currently viewed
 
     By default, this property contains an empty string.
 
     \sa titleChanged()
 */
-QString QWebView::title() const
+QString QQuickWebView::title() const
 {
     if (d->page)
         return d->page->mainFrame()->title();
@@ -389,7 +389,7 @@ QString QWebView::title() const
 }
 
 /*!
-    \property QWebView::url
+    \property QQuickWebView::url
     \brief the url of the web page currently viewed
 
     Setting this property clears the view and loads the URL.
@@ -399,12 +399,12 @@ QString QWebView::title() const
     \sa load(), urlChanged()
 */
 
-void QWebView::setUrl(const QUrl &url)
+void QQuickWebView::setUrl(const QUrl &url)
 {
     page()->mainFrame()->setUrl(url);
 }
 
-QUrl QWebView::url() const
+QUrl QQuickWebView::url() const
 {
     if (d->page)
         return d->page->mainFrame()->url();
@@ -412,14 +412,14 @@ QUrl QWebView::url() const
 }
 
 /*!
-    \property QWebView::icon
+    \property QQuickWebView::icon
     \brief the icon associated with the web page currently viewed
 
     By default, this property contains a null icon.
 
     \sa iconChanged(), QWebSettings::iconForUrl()
 */
-QIcon QWebView::icon() const
+QIcon QQuickWebView::icon() const
 {
     if (d->page)
         return d->page->mainFrame()->icon();
@@ -427,14 +427,14 @@ QIcon QWebView::icon() const
 }
 
 /*!
-    \property QWebView::hasSelection
+    \property QQuickWebView::hasSelection
     \brief whether this page contains selected content or not.
 
     By default, this property is false.
 
     \sa selectionChanged()
 */
-bool QWebView::hasSelection() const
+bool QQuickWebView::hasSelection() const
 {
     if (d->page)
         return d->page->hasSelection();
@@ -442,14 +442,14 @@ bool QWebView::hasSelection() const
 }
 
 /*!
-    \property QWebView::selectedText
+    \property QQuickWebView::selectedText
     \brief the text currently selected
 
     By default, this property contains an empty string.
 
     \sa findText(), selectionChanged(), selectedHtml()
 */
-QString QWebView::selectedText() const
+QString QQuickWebView::selectedText() const
 {
     if (d->page)
         return d->page->selectedText();
@@ -458,14 +458,14 @@ QString QWebView::selectedText() const
 
 /*!
     \since 4.8
-    \property QWebView::selectedHtml
+    \property QQuickWebView::selectedHtml
     \brief the HTML currently selected
 
     By default, this property contains an empty string.
 
     \sa findText(), selectionChanged(), selectedText()
 */
-QString QWebView::selectedHtml() const
+QString QQuickWebView::selectedHtml() const
 {
     if (d->page)
         return d->page->selectedHtml();
@@ -483,13 +483,13 @@ QString QWebView::selectedHtml() const
 
     \sa pageAction()
 */
-void QWebView::triggerPageAction(QWebPage::WebAction action, bool checked)
+void QQuickWebView::triggerPageAction(QWebPage::WebAction action, bool checked)
 {
     page()->triggerAction(action, checked);
 }
 
 /*!
-    \property QWebView::modified
+    \property QQuickWebView::modified
     \brief whether the document was modified by the user
 
     Parts of HTML documents can be editable for example through the
@@ -497,7 +497,7 @@ void QWebView::triggerPageAction(QWebPage::WebAction action, bool checked)
 
     By default, this property is false.
 */
-bool QWebView::isModified() const
+bool QQuickWebView::isModified() const
 {
     if (d->page)
         return d->page->isModified();
@@ -505,7 +505,7 @@ bool QWebView::isModified() const
 }
 
 /*
-Qt::TextInteractionFlags QWebView::textInteractionFlags() const
+Qt::TextInteractionFlags QQuickWebView::textInteractionFlags() const
 {
     // ### FIXME (add to page)
     return Qt::TextInteractionFlags();
@@ -513,14 +513,14 @@ Qt::TextInteractionFlags QWebView::textInteractionFlags() const
 */
 
 /*
-    \property QWebView::textInteractionFlags
+    \property QQuickWebView::textInteractionFlags
     \brief how the view should handle user input
 
     Specifies how the user can interact with the text on the page.
 */
 
 /*
-void QWebView::setTextInteractionFlags(Qt::TextInteractionFlags flags)
+void QQuickWebView::setTextInteractionFlags(Qt::TextInteractionFlags flags)
 {
     Q_UNUSED(flags)
     // ### FIXME (add to page)
@@ -530,29 +530,29 @@ void QWebView::setTextInteractionFlags(Qt::TextInteractionFlags flags)
 /*!
     \reimp
 */
-QSize QWebView::sizeHint() const
+QSize QQuickWebView::sizeHint() const
 {
     return QSize(800, 600); // ####...
 }
 
 /*!
-    \property QWebView::zoomFactor
+    \property QQuickWebView::zoomFactor
     \since 4.5
     \brief the zoom factor for the view
 */
 
-void QWebView::setZoomFactor(qreal factor)
+void QQuickWebView::setZoomFactor(qreal factor)
 {
     page()->mainFrame()->setZoomFactor(factor);
 }
 
-qreal QWebView::zoomFactor() const
+qreal QQuickWebView::zoomFactor() const
 {
     return page()->mainFrame()->zoomFactor();
 }
 
 /*!
-  \property QWebView::textSizeMultiplier
+  \property QQuickWebView::textSizeMultiplier
   \brief the scaling factor for all text in the frame
   \obsolete
 
@@ -569,7 +569,7 @@ qreal QWebView::zoomFactor() const
     Sets the value of the multiplier used to scale the text in a Web page to
     the \a factor specified.
 */
-void QWebView::setTextSizeMultiplier(qreal factor)
+void QQuickWebView::setTextSizeMultiplier(qreal factor)
 {
     page()->mainFrame()->setTextSizeMultiplier(factor);
 }
@@ -577,13 +577,13 @@ void QWebView::setTextSizeMultiplier(qreal factor)
 /*!
     Returns the value of the multiplier used to scale the text in a Web page.
 */
-qreal QWebView::textSizeMultiplier() const
+qreal QQuickWebView::textSizeMultiplier() const
 {
     return page()->mainFrame()->textSizeMultiplier();
 }
 
 /*!
-    \property QWebView::renderHints
+    \property QQuickWebView::renderHints
     \since 4.6
     \brief the default render hints for the view
 
@@ -600,7 +600,7 @@ qreal QWebView::textSizeMultiplier() const
 
     \sa QPainter::renderHints()
 */
-QPainter::RenderHints QWebView::renderHints() const
+QPainter::RenderHints QQuickWebView::renderHints() const
 {
     return d->renderHints;
 }
@@ -611,7 +611,7 @@ QPainter::RenderHints QWebView::renderHints() const
 
     \sa QPainter::setRenderHints()
 */
-void QWebView::setRenderHints(QPainter::RenderHints hints)
+void QQuickWebView::setRenderHints(QPainter::RenderHints hints)
 {
     if (hints == d->renderHints)
         return;
@@ -626,7 +626,7 @@ void QWebView::setRenderHints(QPainter::RenderHints hints)
 
     \sa renderHints, QPainter::renderHints()
 */
-void QWebView::setRenderHint(QPainter::RenderHint hint, bool enabled)
+void QQuickWebView::setRenderHint(QPainter::RenderHint hint, bool enabled)
 {
     QPainter::RenderHints oldHints = d->renderHints;
     if (enabled)
@@ -654,7 +654,7 @@ void QWebView::setRenderHint(QPainter::RenderHint hint, bool enabled)
 
     \sa selectedText(), selectionChanged()
 */
-bool QWebView::findText(const QString &subString, QWebPage::FindFlags options)
+bool QQuickWebView::findText(const QString &subString, QWebPage::FindFlags options)
 {
     if (d->page)
         return d->page->findText(subString, options);
@@ -663,7 +663,7 @@ bool QWebView::findText(const QString &subString, QWebPage::FindFlags options)
 
 /*! \reimp
 */
-bool QWebView::event(QEvent *e)
+bool QQuickWebView::event(QEvent *e)
 {
     if (d->page) {
 #ifndef QT_NO_CONTEXTMENU
@@ -717,7 +717,7 @@ bool QWebView::event(QEvent *e)
 
     \sa reload(), pageAction(), loadFinished()
 */
-void QWebView::stop()
+void QQuickWebView::stop()
 {
     if (d->page)
         d->page->triggerAction(QWebPage::Stop);
@@ -733,7 +733,7 @@ void QWebView::stop()
 
     \sa forward(), pageAction()
 */
-void QWebView::back()
+void QQuickWebView::back()
 {
     if (d->page)
         d->page->triggerAction(QWebPage::Back);
@@ -749,7 +749,7 @@ void QWebView::back()
 
     \sa back(), pageAction()
 */
-void QWebView::forward()
+void QQuickWebView::forward()
 {
     if (d->page)
         d->page->triggerAction(QWebPage::Forward);
@@ -760,7 +760,7 @@ void QWebView::forward()
 
     \sa stop(), pageAction(), loadStarted()
 */
-void QWebView::reload()
+void QQuickWebView::reload()
 {
     if (d->page)
         d->page->triggerAction(QWebPage::Reload);
@@ -768,7 +768,7 @@ void QWebView::reload()
 
 /*! \reimp
 */
-void QWebView::resizeEvent(QResizeEvent *e)
+void QQuickWebView::resizeEvent(QResizeEvent *e)
 {
     if (d->page)
         d->page->setViewportSize(e->size());
@@ -776,7 +776,7 @@ void QWebView::resizeEvent(QResizeEvent *e)
 
 /*! \reimp
 */
-void QWebView::paint(QPainter *p)
+void QQuickWebView::paint(QPainter *p)
 {
     if (!d->page)
         return;
@@ -810,7 +810,7 @@ void QWebView::paint(QPainter *p)
 
     \sa QWebPage::createWindow(), QWebPage::acceptNavigationRequest()
 */
-QWebView *QWebView::createWindow(QWebPage::WebWindowType type)
+QQuickWebView *QQuickWebView::createWindow(QWebPage::WebWindowType type)
 {
     Q_UNUSED(type)
     return 0;
@@ -818,7 +818,7 @@ QWebView *QWebView::createWindow(QWebPage::WebWindowType type)
 
 /*! \reimp
 */
-void QWebView::mouseMoveEvent(QMouseEvent* ev)
+void QQuickWebView::mouseMoveEvent(QMouseEvent* ev)
 {
     if (d->page) {
         const bool accepted = ev->isAccepted();
@@ -829,7 +829,7 @@ void QWebView::mouseMoveEvent(QMouseEvent* ev)
 
 /*! \reimp
 */
-void QWebView::mousePressEvent(QMouseEvent* ev)
+void QQuickWebView::mousePressEvent(QMouseEvent* ev)
 {
     if (d->page) {
         const bool accepted = ev->isAccepted();
@@ -840,7 +840,7 @@ void QWebView::mousePressEvent(QMouseEvent* ev)
 
 /*! \reimp
 */
-void QWebView::mouseDoubleClickEvent(QMouseEvent* ev)
+void QQuickWebView::mouseDoubleClickEvent(QMouseEvent* ev)
 {
     if (d->page) {
         const bool accepted = ev->isAccepted();
@@ -851,7 +851,7 @@ void QWebView::mouseDoubleClickEvent(QMouseEvent* ev)
 
 /*! \reimp
 */
-void QWebView::mouseReleaseEvent(QMouseEvent* ev)
+void QQuickWebView::mouseReleaseEvent(QMouseEvent* ev)
 {
     if (d->page) {
         const bool accepted = ev->isAccepted();
@@ -863,7 +863,7 @@ void QWebView::mouseReleaseEvent(QMouseEvent* ev)
 #ifndef QT_NO_WHEELEVENT
 /*! \reimp
 */
-void QWebView::wheelEvent(QWheelEvent* ev)
+void QQuickWebView::wheelEvent(QWheelEvent* ev)
 {
     if (d->page) {
         const bool accepted = ev->isAccepted();
@@ -875,7 +875,7 @@ void QWebView::wheelEvent(QWheelEvent* ev)
 
 /*! \reimp
 */
-void QWebView::keyPressEvent(QKeyEvent* ev)
+void QQuickWebView::keyPressEvent(QKeyEvent* ev)
 {
     if (d->page)
         d->page->event(ev);
@@ -885,7 +885,7 @@ void QWebView::keyPressEvent(QKeyEvent* ev)
 
 /*! \reimp
 */
-void QWebView::keyReleaseEvent(QKeyEvent* ev)
+void QQuickWebView::keyReleaseEvent(QKeyEvent* ev)
 {
     if (d->page)
         d->page->event(ev);
@@ -895,7 +895,7 @@ void QWebView::keyReleaseEvent(QKeyEvent* ev)
 
 /*! \reimp
 */
-void QWebView::focusInEvent(QFocusEvent* ev)
+void QQuickWebView::focusInEvent(QFocusEvent* ev)
 {
     if (d->page)
         d->page->event(ev);
@@ -905,7 +905,7 @@ void QWebView::focusInEvent(QFocusEvent* ev)
 
 /*! \reimp
 */
-void QWebView::focusOutEvent(QFocusEvent* ev)
+void QQuickWebView::focusOutEvent(QFocusEvent* ev)
 {
     if (d->page)
         d->page->event(ev);
@@ -915,7 +915,7 @@ void QWebView::focusOutEvent(QFocusEvent* ev)
 
 /*! \reimp
 */
-void QWebView::dragEnterEvent(QDragEnterEvent* ev)
+void QQuickWebView::dragEnterEvent(QDragEnterEvent* ev)
 {
 #ifndef QT_NO_DRAGANDDROP
     if (d->page)
@@ -925,7 +925,7 @@ void QWebView::dragEnterEvent(QDragEnterEvent* ev)
 
 /*! \reimp
 */
-void QWebView::dragLeaveEvent(QDragLeaveEvent* ev)
+void QQuickWebView::dragLeaveEvent(QDragLeaveEvent* ev)
 {
 #ifndef QT_NO_DRAGANDDROP
     if (d->page)
@@ -935,7 +935,7 @@ void QWebView::dragLeaveEvent(QDragLeaveEvent* ev)
 
 /*! \reimp
 */
-void QWebView::dragMoveEvent(QDragMoveEvent* ev)
+void QQuickWebView::dragMoveEvent(QDragMoveEvent* ev)
 {
 #ifndef QT_NO_DRAGANDDROP
     if (d->page)
@@ -945,7 +945,7 @@ void QWebView::dragMoveEvent(QDragMoveEvent* ev)
 
 /*! \reimp
 */
-void QWebView::dropEvent(QDropEvent* ev)
+void QQuickWebView::dropEvent(QDropEvent* ev)
 {
 #ifndef QT_NO_DRAGANDDROP
     if (d->page)
@@ -955,7 +955,7 @@ void QWebView::dropEvent(QDropEvent* ev)
 
 /*!\reimp
 */
-QVariant QWebView::inputMethodQuery(Qt::InputMethodQuery property) const
+QVariant QQuickWebView::inputMethodQuery(Qt::InputMethodQuery property) const
 {
     if (d->page)
         return d->page->inputMethodQuery(property);
@@ -964,14 +964,14 @@ QVariant QWebView::inputMethodQuery(Qt::InputMethodQuery property) const
 
 /*!\reimp
 */
-void QWebView::inputMethodEvent(QInputMethodEvent *e)
+void QQuickWebView::inputMethodEvent(QInputMethodEvent *e)
 {
     if (d->page)
         d->page->event(e);
 }
 
 /*!
-    \fn void QWebView::titleChanged(const QString &title)
+    \fn void QQuickWebView::titleChanged(const QString &title)
 
     This signal is emitted whenever the \a title of the main frame changes.
 
@@ -979,7 +979,7 @@ void QWebView::inputMethodEvent(QInputMethodEvent *e)
 */
 
 /*!
-    \fn void QWebView::urlChanged(const QUrl &url)
+    \fn void QQuickWebView::urlChanged(const QUrl &url)
 
     This signal is emitted when the \a url of the view changes.
 
@@ -987,13 +987,13 @@ void QWebView::inputMethodEvent(QInputMethodEvent *e)
 */
 
 /*!
-    \fn void QWebView::statusBarMessage(const QString& text)
+    \fn void QQuickWebView::statusBarMessage(const QString& text)
 
     This signal is emitted when the status bar \a text is changed by the page.
 */
 
 /*!
-    \fn void QWebView::iconChanged()
+    \fn void QQuickWebView::iconChanged()
 
     This signal is emitted whenever the icon of the page is loaded or changes.
 
@@ -1004,7 +1004,7 @@ void QWebView::inputMethodEvent(QInputMethodEvent *e)
 */
 
 /*!
-    \fn void QWebView::loadStarted()
+    \fn void QQuickWebView::loadStarted()
 
     This signal is emitted when a new load of the page is started.
 
@@ -1012,7 +1012,7 @@ void QWebView::inputMethodEvent(QInputMethodEvent *e)
 */
 
 /*!
-    \fn void QWebView::loadFinished(bool ok)
+    \fn void QQuickWebView::loadFinished(bool ok)
 
     This signal is emitted when a load of the page is finished.
     \a ok will indicate whether the load was successful or any error occurred.
@@ -1021,7 +1021,7 @@ void QWebView::inputMethodEvent(QInputMethodEvent *e)
 */
 
 /*!
-    \fn void QWebView::selectionChanged()
+    \fn void QQuickWebView::selectionChanged()
 
     This signal is emitted whenever the selection changes.
 
@@ -1029,7 +1029,7 @@ void QWebView::inputMethodEvent(QInputMethodEvent *e)
 */
 
 /*!
-    \fn void QWebView::loadProgress(int progress)
+    \fn void QQuickWebView::loadProgress(int progress)
 
     This signal is emitted every time an element in the web page
     completes loading and the overall loading progress advances.
@@ -1043,7 +1043,7 @@ void QWebView::inputMethodEvent(QInputMethodEvent *e)
 */
 
 /*!
-    \fn void QWebView::linkClicked(const QUrl &url)
+    \fn void QQuickWebView::linkClicked(const QUrl &url)
 
     This signal is emitted whenever the user clicks on a link and the page's linkDelegationPolicy
     property is set to delegate the link handling for the specified \a url.
