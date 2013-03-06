@@ -83,12 +83,14 @@ QT -= widgets
 
 SOURCES += \
     $${SOURCE_DIR}/qt/QuickApi/plugin.cpp \
+    $${SOURCE_DIR}/qt/QuickApi/qquickpageclient.cpp \
     $${SOURCE_DIR}/qt/QuickApi/qquickwebview.cpp \
     $${SOURCE_DIR}/qt/QuickApi/qwebframe.cpp \
     $${SOURCE_DIR}/qt/QuickApi/qwebpage.cpp \
     $${SOURCE_DIR}/qt/WidgetSupport/DefaultFullScreenVideoHandler.cpp
 
 HEADERS += \
+    $${SOURCE_DIR}/qt/QuickApi/qquickpageclient.h \
     $${SOURCE_DIR}/qt/QuickApi/qquickwebview.h \
     $${SOURCE_DIR}/qt/QuickApi/qwebframe.h \
     $${SOURCE_DIR}/qt/QuickApi/qwebframe_p.h \

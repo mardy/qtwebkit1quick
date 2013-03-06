@@ -88,7 +88,8 @@ public:
     void setTextInteractionFlag(Qt::TextInteractionFlag flag);
     */
 
-    QVariant inputMethodQuery(Qt::InputMethodQuery property) const;
+    void setInputMethodHints(Qt::InputMethodHints hints);
+    virtual QVariant inputMethodQuery(Qt::InputMethodQuery property) const;
 
     QSize sizeHint() const;
 
@@ -104,6 +105,8 @@ public:
 
     bool findText(const QString& subString, QWebPage::FindFlags options = 0);
 
+    void repaint(const QRect &dirtyRect = QRect());
+
     virtual bool event(QEvent*);
 
 public Q_SLOTS:
@@ -115,7 +118,7 @@ public Q_SLOTS:
 Q_SIGNALS:
     void loadStarted();
     void loadProgress(int progress);
-    void loadFinished(bool);
+    void loadFinished(bool success);
     void titleChanged(const QString& title);
     void statusBarMessage(const QString& text);
     void linkClicked(const QUrl&);
@@ -124,7 +127,7 @@ Q_SIGNALS:
     void urlChanged(const QUrl&);
 
 protected:
-    void resizeEvent(QResizeEvent*);
+    virtual void geometryChanged(const QRectF &, const QRectF &);
     virtual void paint(QPainter*);
 
     virtual QQuickWebView *createWindow(QWebPage::WebWindowType type);
@@ -150,6 +153,7 @@ private:
     friend class QWebPage;
     QQuickWebViewPrivate* d;
     Q_PRIVATE_SLOT(d, void _q_pageDestroyed())
+    Q_PRIVATE_SLOT(d, void _q_repaintReal())
 };
 
 #endif // QWEBVIEW_H

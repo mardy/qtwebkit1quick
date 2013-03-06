@@ -39,6 +39,8 @@ public:
     QQuickWebViewPrivate(QQuickWebView *view)
         : view(view)
         , page(0)
+        , repaintQueued(false)
+        , inputMethodHints(Qt::ImhNone)
         , renderHints(QPainter::TextAntialiasing | QPainter::SmoothPixmapTransform)
     {
         Q_ASSERT(view);
@@ -47,12 +49,16 @@ public:
     virtual ~QQuickWebViewPrivate();
 
     void _q_pageDestroyed();
+    void _q_repaintReal();
     void detachCurrentPage();
 
     QQuickWebView *view;
     QWebPage *page;
 
+    bool repaintQueued;
+    Qt::InputMethodHints inputMethodHints;
     QPainter::RenderHints renderHints;
+    QPixmap renderedPage;
 };
 
 QQuickWebViewPrivate::~QQuickWebViewPrivate()
@@ -64,6 +70,21 @@ void QQuickWebViewPrivate::_q_pageDestroyed()
 {
     page = 0;
     view->setPage(0);
+}
+
+void QQuickWebViewPrivate::_q_repaintReal()
+{
+    qDebug() << Q_FUNC_INFO << "start";
+    repaintQueued = false;
+    QPainter p;
+    if (!p.begin(&renderedPage)) {
+        qDebug() << "Painter error!";
+        return;
+    }
+    QWebFrame *frame = page->mainFrame();
+    frame->render(&p);
+    view->update();
+    qDebug() << Q_FUNC_INFO << "end";
 }
 
 /*!
@@ -401,6 +422,7 @@ QString QQuickWebView::title() const
 
 void QQuickWebView::setUrl(const QUrl &url)
 {
+    qDebug() << Q_FUNC_INFO << url;
     page()->mainFrame()->setUrl(url);
 }
 
@@ -768,16 +790,28 @@ void QQuickWebView::reload()
 
 /*! \reimp
 */
-void QQuickWebView::resizeEvent(QResizeEvent *e)
+void QQuickWebView::geometryChanged(const QRectF &newGeometry,
+                                    const QRectF &oldGeometry)
 {
+    QSize size = newGeometry.size().toSize();
     if (d->page)
-        d->page->setViewportSize(e->size());
+        d->page->setViewportSize(size);
+    d->renderedPage = QPixmap(size);
+    QQuickPaintedItem::geometryChanged(newGeometry, oldGeometry);
+}
+
+void QQuickWebView::repaint(const QRect &dirtyRect)
+{
+    if (d->repaintQueued) return;
+    d->repaintQueued = true;
+    QMetaObject::invokeMethod(this, "_q_repaintReal", Qt::QueuedConnection);
 }
 
 /*! \reimp
 */
 void QQuickWebView::paint(QPainter *p)
 {
+    qDebug() << Q_FUNC_INFO;
     if (!d->page)
         return;
 #ifdef QWEBKIT_TIME_RENDERING
@@ -785,10 +819,10 @@ void QQuickWebView::paint(QPainter *p)
     time.start();
 #endif
 
-    QWebFrame *frame = d->page->mainFrame();
     p->setRenderHints(d->renderHints);
 
-    frame->render(p);
+    qDebug() << "Rendering frame";
+    p->drawPixmap(QPoint(0, 0), d->renderedPage);
 
 #ifdef    QWEBKIT_TIME_RENDERING
     int elapsed = time.elapsed();
@@ -953,10 +987,19 @@ void QQuickWebView::dropEvent(QDropEvent* ev)
 #endif
 }
 
+void QQuickWebView::setInputMethodHints(Qt::InputMethodHints hints)
+{
+    if (hints == d->inputMethodHints) return;
+    d->inputMethodHints = hints;
+    updateInputMethod(Qt::ImHints);
+}
+
 /*!\reimp
 */
 QVariant QQuickWebView::inputMethodQuery(Qt::InputMethodQuery property) const
 {
+    if (property == Qt::ImHints)
+        return int(d->inputMethodHints);
     if (d->page)
         return d->page->inputMethodQuery(property);
     return QVariant();

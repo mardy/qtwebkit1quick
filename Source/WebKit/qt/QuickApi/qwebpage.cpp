@@ -36,6 +36,7 @@
 #include "qwebkitplatformplugin.h"
 #include "qwebpage_p.h"
 #include "qwebsettings.h"
+#include "qquickpageclient.h"
 #include "qquickwebview.h"
 
 #include <QBasicTimer>
@@ -1099,7 +1100,10 @@ void QWebPage::setView(QObject *view)
         return;
 
     d->view = view;
-    // TODO setViewportSize(view ? view->size() : QSize(0, 0));
+    if (view) {
+        d->client.reset(new PageClientQQuick(static_cast<QQuickWebView*>(view),
+                                             this));
+    }
 }
 
 /*!
