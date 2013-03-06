@@ -78,25 +78,19 @@ DEFINES += QT_NO_CONTEXTMENU
 QT -= widgets
 
 SOURCES += \
-    $$PWD/WebKit/qt/QuickApi/qquickwebview.cpp \
-    $$PWD/WebKit/qt/QuickApi/qwebframe.cpp \
-    $$PWD/WebKit/qt/QuickApi/qwebpage.cpp \
-    $$PWD/WebKit/qt/WidgetSupport/QWebUndoCommand.cpp \
-    $$PWD/WebKit/qt/WidgetSupport/DefaultFullScreenVideoHandler.cpp \
-    $$PWD/WebKit/qt/WidgetSupport/QGraphicsWidgetPluginImpl.cpp \
-    $$PWD/WebKit/qt/WidgetSupport/QWidgetPluginImpl.cpp
+    $${SOURCE_DIR}/qt/QuickApi/qquickwebview.cpp \
+    $${SOURCE_DIR}/qt/QuickApi/qwebframe.cpp \
+    $${SOURCE_DIR}/qt/QuickApi/qwebpage.cpp \
+    $${SOURCE_DIR}/qt/WidgetSupport/DefaultFullScreenVideoHandler.cpp
 
 HEADERS += \
-    $$PWD/WebKit/qt/QuickApi/qquickwebview.h \
-    $$PWD/WebKit/qt/QuickApi/qwebframe.h \
-    $$PWD/WebKit/qt/QuickApi/qwebframe_p.h \
-    $$PWD/WebKit/qt/QuickApi/qwebpage.h \
-    $$PWD/WebKit/qt/QuickApi/qwebpage_p.h \
-    $$PWD/WebKit/qt/Api/qwebkitplatformplugin.h \
-    $$PWD/WebKit/qt/WidgetSupport/DefaultFullScreenVideoHandler.h \
-    $$PWD/WebKit/qt/WidgetSupport/QWebUndoCommand.h \
-    $$PWD/WebKit/qt/WidgetSupport/QGraphicsWidgetPluginImpl.h \
-    $$PWD/WebKit/qt/WidgetSupport/QWidgetPluginImpl.h \
+    $${SOURCE_DIR}/qt/QuickApi/qquickwebview.h \
+    $${SOURCE_DIR}/qt/QuickApi/qwebframe.h \
+    $${SOURCE_DIR}/qt/QuickApi/qwebframe_p.h \
+    $${SOURCE_DIR}/qt/QuickApi/qwebpage.h \
+    $${SOURCE_DIR}/qt/QuickApi/qwebpage_p.h \
+    $${SOURCE_DIR}/qt/Api/qwebkitplatformplugin.h \
+    $${SOURCE_DIR}/qt/WidgetSupport/DefaultFullScreenVideoHandler.h
 
 INCLUDEPATH += \
     $$PWD/qt/Api \

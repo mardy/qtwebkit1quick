@@ -15,7 +15,7 @@ build?(webkit1) {
     SUBDIRS += webkitwidgets
 
     have?(QTQUICK) {
-        webkit1quick.file = quickapi.pri
+        webkit1quick.file = WebKit/qt/QuickApi/quickapi.pro
         SUBDIRS += webkit1quick
     }
 }
