@@ -197,6 +197,8 @@ QQuickWebView::QQuickWebView(QQuickItem *parent)
     setFlags(QQuickItem::ItemAcceptsInputMethod |
              QQuickItem::ItemHasContents |
              QQuickItem::ItemAcceptsDrops);
+    setAcceptHoverEvents(true);
+    setAcceptedMouseButtons(Qt::LeftButton);
 }
 
 /*!
@@ -866,6 +868,7 @@ void QQuickWebView::mouseMoveEvent(QMouseEvent* ev)
 void QQuickWebView::mousePressEvent(QMouseEvent* ev)
 {
     if (d->page) {
+        forceActiveFocus();
         const bool accepted = ev->isAccepted();
         d->page->event(ev);
         ev->setAccepted(accepted);
