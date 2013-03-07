@@ -920,6 +920,17 @@ QQuickWebView *QQuickWebView::createWindow(QWebPage::WebWindowType type)
 
 /*! \reimp
 */
+void QQuickWebView::hoverMoveEvent(QHoverEvent* ev)
+{
+    if (d->page) {
+        const bool accepted = ev->isAccepted();
+        d->page->event(ev);
+        ev->setAccepted(accepted);
+    }
+}
+
+/*! \reimp
+*/
 void QQuickWebView::mouseMoveEvent(QMouseEvent* ev)
 {
     if (d->page) {

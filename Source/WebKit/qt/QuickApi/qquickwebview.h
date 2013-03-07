@@ -135,6 +135,7 @@ protected:
 
     virtual QQuickWebView *createWindow(QWebPage::WebWindowType type);
 
+    virtual void hoverMoveEvent(QHoverEvent*);
     virtual void mouseMoveEvent(QMouseEvent*);
     virtual void mousePressEvent(QMouseEvent*);
     virtual void mouseDoubleClickEvent(QMouseEvent*);

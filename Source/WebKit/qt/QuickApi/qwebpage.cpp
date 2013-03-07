@@ -1626,6 +1626,16 @@ bool QWebPage::event(QEvent *ev)
     case QEvent::Timer:
         d->timerEvent(static_cast<QTimerEvent*>(ev));
         break;
+    case QEvent::HoverMove:
+        {
+            QHoverEvent *hEv = static_cast<QHoverEvent*>(ev);
+            QMouseEvent dummyEvent(QEvent::MouseMove, hEv->pos(),
+                                   Qt::NoButton, Qt::NoButton,
+                                   hEv->modifiers());
+            d->mouseMoveEvent(&dummyEvent);
+            ev->setAccepted(dummyEvent.isAccepted());
+        }
+        break;
     case QEvent::MouseMove:
         d->mouseMoveEvent(static_cast<QMouseEvent*>(ev));
         break;
