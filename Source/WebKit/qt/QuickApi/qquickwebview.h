@@ -48,6 +48,7 @@ class QWEBKITWIDGETS_EXPORT QQuickWebView : public QQuickPaintedItem {
     Q_PROPERTY(QString selectedHtml READ selectedHtml)
     Q_PROPERTY(bool hasSelection READ hasSelection)
     Q_PROPERTY(bool modified READ isModified)
+    Q_PROPERTY(bool resizesToContents READ resizesToContents WRITE setResizesToContents)
     //Q_PROPERTY(Qt::TextInteractionFlags textInteractionFlags READ textInteractionFlags WRITE setTextInteractionFlags)
     Q_PROPERTY(qreal textSizeMultiplier READ textSizeMultiplier WRITE setTextSizeMultiplier DESIGNABLE false)
     Q_PROPERTY(qreal zoomFactor READ zoomFactor WRITE setZoomFactor)
@@ -82,6 +83,8 @@ public:
 
     bool isModified() const;
 
+    void setResizesToContents(bool enabled);
+    bool resizesToContents() const;
     /*
     Qt::TextInteractionFlags textInteractionFlags() const;
     void setTextInteractionFlags(Qt::TextInteractionFlags flags);
@@ -154,6 +157,7 @@ private:
     QQuickWebViewPrivate* d;
     Q_PRIVATE_SLOT(d, void _q_pageDestroyed())
     Q_PRIVATE_SLOT(d, void _q_repaintReal())
+    Q_PRIVATE_SLOT(d, void _q_contentsSizeChanged(const QSize&))
 };
 
 #endif // QWEBVIEW_H

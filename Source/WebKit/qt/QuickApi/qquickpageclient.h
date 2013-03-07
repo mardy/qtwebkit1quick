@@ -73,7 +73,7 @@ public:
 
     virtual QStyle* style() const;
 
-    virtual bool viewResizesToContentsEnabled() const { return false; }
+    virtual bool viewResizesToContentsEnabled() const;
 
     virtual QRectF windowRect() const;
 

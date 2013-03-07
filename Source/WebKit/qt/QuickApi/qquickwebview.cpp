@@ -37,10 +37,11 @@
 class QQuickWebViewPrivate {
 public:
     QQuickWebViewPrivate(QQuickWebView *view)
-        : view(view)
+        : q(view)
         , page(0)
         , repaintQueued(false)
         , inputMethodHints(Qt::ImhNone)
+        , resizesToContents(false)
         , renderHints(QPainter::TextAntialiasing | QPainter::SmoothPixmapTransform)
     {
         Q_ASSERT(view);
@@ -48,16 +49,20 @@ public:
 
     virtual ~QQuickWebViewPrivate();
 
+    void updateResizesToContentsForPage();
+
     void _q_pageDestroyed();
     void _q_repaintReal();
+    void _q_contentsSizeChanged(const QSize&);
     void detachCurrentPage();
 
-    QQuickWebView *view;
+    QQuickWebView *q;
     QWebPage *page;
 
     bool repaintQueued;
     QRect repaintRect;
     Qt::InputMethodHints inputMethodHints;
+    bool resizesToContents;
     QPainter::RenderHints renderHints;
     QPixmap renderedPage;
 };
@@ -70,7 +75,7 @@ QQuickWebViewPrivate::~QQuickWebViewPrivate()
 void QQuickWebViewPrivate::_q_pageDestroyed()
 {
     page = 0;
-    view->setPage(0);
+    q->setPage(0);
 }
 
 void QQuickWebViewPrivate::_q_repaintReal()
@@ -84,9 +89,32 @@ void QQuickWebViewPrivate::_q_repaintReal()
     }
     QWebFrame *frame = page->mainFrame();
     frame->render(&p, QWebFrame::ContentsLayer, QRegion(repaintRect));
-    view->update(repaintRect);
+    q->update(repaintRect);
     repaintRect = QRect();
     qDebug() << Q_FUNC_INFO << "end";
+}
+
+void QQuickWebViewPrivate::updateResizesToContentsForPage()
+{
+    ASSERT(page);
+    if (resizesToContents) {
+        // resizes to contents mode requires preferred contents size to be set
+        if (!page->preferredContentsSize().isValid())
+            page->setPreferredContentsSize(QSize(960, 800));
+
+        QObject::connect(page->mainFrame(), SIGNAL(contentsSizeChanged(QSize)),
+            q, SLOT(_q_contentsSizeChanged(const QSize&)), Qt::UniqueConnection);
+    } else {
+        QObject::disconnect(page->mainFrame(), SIGNAL(contentsSizeChanged(QSize)),
+            q, SLOT(_q_contentsSizeChanged(const QSize&)));
+    }
+}
+
+void QQuickWebViewPrivate::_q_contentsSizeChanged(const QSize& size)
+{
+    if (!resizesToContents)
+        return;
+    q->setContentsSize(size);
 }
 
 /*!
@@ -244,10 +272,10 @@ void QQuickWebViewPrivate::detachCurrentPage()
     // if the page was created by us, we own it and need to
     // destroy it as well.
 
-    if (page->parent() == view)
+    if (page->parent() == q)
         delete page;
     else
-        page->disconnect(view);
+        page->disconnect(q);
 
     page = 0;
 }
@@ -271,6 +299,12 @@ void QQuickWebView::setPage(QWebPage* page)
 
     if (d->page) {
         d->page->setView(this);
+
+        d->page->setViewportSize(QSize(width(), height()));
+
+        if (d->resizesToContents)
+            d->updateResizesToContentsForPage();
+
         // #### connect signals
         QWebFrame *mainFrame = d->page->mainFrame();
         connect(mainFrame, SIGNAL(titleChanged(QString)),
@@ -528,6 +562,35 @@ bool QQuickWebView::isModified() const
     if (d->page)
         return d->page->isModified();
     return false;
+}
+
+/*!
+    \property QQuickWebView::resizesToContents
+    \brief whether the size of the QQuickWebView and its viewport changes to match the contents size
+    \since 4.7 
+
+    If this property is set, the QQuickWebView will automatically change its
+    size to match the size of the main frame contents. As a result the top level frame
+    will never have scrollbars. It will also make CSS fixed positioning to behave like absolute positioning
+    with elements positioned relative to the document instead of the viewport.
+
+    This property should be used in conjunction with the QWebPage::preferredContentsSize property.
+    If not explicitly set, the preferredContentsSize is automatically set to a reasonable value.
+
+    \sa QWebPage::setPreferredContentsSize()
+*/
+void QQuickWebView::setResizesToContents(bool enabled)
+{
+    if (d->resizesToContents == enabled)
+        return;
+    d->resizesToContents = enabled;
+    if (d->page)
+        d->updateResizesToContentsForPage();
+}
+
+bool QQuickWebView::resizesToContents() const
+{
+    return d->resizesToContents;
 }
 
 /*

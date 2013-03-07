@@ -121,6 +121,11 @@ QStyle* PageClientQQuick::style() const
     return 0;
 }
 
+bool PageClientQQuick::viewResizesToContentsEnabled() const
+{
+    return view->resizesToContents();
+}
+
 QRectF PageClientQQuick::windowRect() const
 {
     return QRectF(view->window()->geometry());
