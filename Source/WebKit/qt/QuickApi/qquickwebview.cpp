@@ -56,6 +56,7 @@ public:
     QWebPage *page;
 
     bool repaintQueued;
+    QRect repaintRect;
     Qt::InputMethodHints inputMethodHints;
     QPainter::RenderHints renderHints;
     QPixmap renderedPage;
@@ -74,7 +75,7 @@ void QQuickWebViewPrivate::_q_pageDestroyed()
 
 void QQuickWebViewPrivate::_q_repaintReal()
 {
-    qDebug() << Q_FUNC_INFO << "start";
+    qDebug() << Q_FUNC_INFO << "start" << repaintRect;
     repaintQueued = false;
     QPainter p;
     if (!p.begin(&renderedPage)) {
@@ -82,8 +83,9 @@ void QQuickWebViewPrivate::_q_repaintReal()
         return;
     }
     QWebFrame *frame = page->mainFrame();
-    frame->render(&p);
-    view->update();
+    frame->render(&p, QWebFrame::ContentsLayer, QRegion(repaintRect));
+    view->update(repaintRect);
+    repaintRect = QRect();
     qDebug() << Q_FUNC_INFO << "end";
 }
 
@@ -804,6 +806,7 @@ void QQuickWebView::geometryChanged(const QRectF &newGeometry,
 
 void QQuickWebView::repaint(const QRect &dirtyRect)
 {
+    d->repaintRect = d->repaintRect.united(dirtyRect);
     if (d->repaintQueued) return;
     d->repaintQueued = true;
     QMetaObject::invokeMethod(this, "_q_repaintReal", Qt::QueuedConnection);
